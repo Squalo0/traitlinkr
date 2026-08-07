@@ -1,6 +1,8 @@
 import { getPlantDetails } from '@/lib/queries'
 import { PlantForm } from '@/components/plant-form'
 import { PlantTable } from '@/components/plant-table'
+export const dynamic = "force-dynamic";
+
 
 export default async function PlantsPage() {
   const plants = await getPlantDetails()

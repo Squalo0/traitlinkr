@@ -3,6 +3,7 @@ import { CrossSimulator } from '@/components/cross-simulator'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { getCrosses, getPlants, getSites } from '@/lib/queries'
+export const dynamic = "force-dynamic";
 
 export default async function SimulatorPage() {
   const [plants, sites, crosses] = await Promise.all([

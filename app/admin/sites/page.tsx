@@ -5,6 +5,7 @@ import { SiteForm } from '@/components/site-form'
 import { PlantingForm } from '@/components/planting-form'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+export const dynamic = "force-dynamic";
 
 export default async function SitesPage() {
   const [sites, plantings, plants] = await Promise.all([

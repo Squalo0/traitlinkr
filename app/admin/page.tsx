@@ -14,6 +14,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { TRAIT_LABELS } from '@/lib/types'
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
   const [stats, sites, crosses, requests, plantings] = await Promise.all([
     getDashboardStats(),
