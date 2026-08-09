@@ -51,12 +51,15 @@ export default async function DashboardPage() {
             Germplasm, field sites, and predictive cross activity at a glance.
           </p>
         </div>
-        <Button asChild>
-          <Link href="/admin/crosses">
-            <GitMerge className="h-4 w-4" />
-            New Cross Simulation
-          </Link>
-        </Button>
+        <Button
+          nativeButton={false}
+          render={
+            <Link href="/admin/crosses">
+              <GitMerge className="h-4 w-4" />
+              New Cross Simulation
+            </Link>
+          }
+        />
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
@@ -80,9 +83,12 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex-row items-center justify-between">
             <CardTitle>Recent Requests</CardTitle>
-            <Button asChild variant="ghost" size="sm">
-              <Link href="/requests">View all</Link>
-            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              nativeButton={false}
+              render={<Link href="/requests">View all</Link>}
+            />
           </CardHeader>
           <CardContent className="space-y-3">
             {requests.length === 0 ? (

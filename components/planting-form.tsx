@@ -69,12 +69,14 @@ export function PlantingForm({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline">
-          <Sprout className="h-4 w-4" />
-          Record Planting
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button variant="outline">
+            <Sprout className="h-4 w-4" />
+            Record Planting
+          </Button>
+        }
+      />
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Record Planting</DialogTitle>
