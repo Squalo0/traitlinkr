@@ -137,3 +137,10 @@ export async function createRequest(input: {
   revalidatePath('/admin')
   return { id: rows[0].id }
 }
+
+export async function setRequestStatus(id: number, status: 'open' | 'matched' | 'closed') {
+  await sql`UPDATE requests SET status = ${status} WHERE id = ${id}`
+  revalidatePath('/requests')
+  revalidatePath(`/requests/${id}`)
+  revalidatePath('/admin')
+}
