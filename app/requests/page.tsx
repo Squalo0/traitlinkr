@@ -3,7 +3,7 @@ import { ArrowRight, Inbox } from 'lucide-react'
 import { getRequests } from '@/lib/queries'
 import { RequestForm } from '@/components/request-form'
 import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { RequestStatusBadge } from '@/components/request-status-badge'
 import { TRAIT_LABELS } from '@/lib/types'
 
 export const dynamic = 'force-dynamic'
@@ -14,7 +14,7 @@ export default async function RequestsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-balance">
+        <h1 className="font-heading text-2xl font-semibold tracking-tight text-balance">
           Breeding Requests
         </h1>
         <p className="mt-1 text-sm text-muted-foreground text-pretty">
@@ -50,12 +50,7 @@ export default async function RequestsPage() {
                       <p className="text-sm font-medium leading-tight text-pretty">
                         {r.title}
                       </p>
-                      <Badge
-                        variant={r.status === 'open' ? 'default' : 'secondary'}
-                        className="shrink-0 capitalize"
-                      >
-                        {r.status}
-                      </Badge>
+                      <RequestStatusBadge status={r.status} className="shrink-0" />
                     </div>
                     <p className="text-xs text-muted-foreground">
                       {r.requester_name}
@@ -66,7 +61,7 @@ export default async function RequestsPage() {
                       {r.target_traits.slice(0, 3).map((t) => (
                         <span
                           key={t.trait}
-                          className="rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foreground"
+                          className="rounded border border-border bg-secondary px-1.5 py-0.5 text-[11px] text-secondary-foreground"
                         >
                           {TRAIT_LABELS[t.trait] ?? t.trait}
                         </span>

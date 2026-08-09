@@ -89,7 +89,7 @@ export function RequestForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>New Breeding Request</CardTitle>
+        <CardTitle className="font-heading">New Breeding Request</CardTitle>
         <CardDescription>
           Describe the traits you need and we&apos;ll recommend the best
           parent pairs from the germplasm registry.

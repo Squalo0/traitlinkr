@@ -38,7 +38,7 @@ export default async function RequestDetailPage({
         <CardContent className="space-y-3 p-5">
           <div className="flex flex-wrap items-start justify-between gap-2">
             <div>
-              <h1 className="text-xl font-semibold tracking-tight text-balance">
+              <h1 className="font-heading text-xl font-semibold tracking-tight text-balance">
                 {request.title}
               </h1>
               <p className="mt-1 text-sm text-muted-foreground">
@@ -58,7 +58,7 @@ export default async function RequestDetailPage({
             {request.target_traits.map((t) => (
               <span
                 key={t.trait}
-                className="rounded bg-muted px-2 py-1 text-xs text-muted-foreground"
+                className="rounded border border-border bg-secondary px-2 py-1 text-xs text-secondary-foreground"
               >
                 {TRAIT_LABELS[t.trait] ?? t.trait}: target {t.target}
                 {t.weight !== 1 ? ` (weight ${t.weight})` : ''}
@@ -69,7 +69,7 @@ export default async function RequestDetailPage({
       </Card>
 
       <div className="space-y-3">
-        <h2 className="text-sm font-medium text-muted-foreground">
+        <h2 className="font-heading text-sm font-medium text-muted-foreground">
           Recommended parent pairs
         </h2>
         {recommendations.length === 0 ? (
