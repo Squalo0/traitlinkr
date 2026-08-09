@@ -106,6 +106,16 @@ export function CrossSimulator({
 
   const activeModel = MODELS.find((m) => m.value === model)!
 
+  // base-ui's Select.Value only resolves a display label from the Root's
+  // `items` map — it does not read the rendered SelectItem children — so we
+  // provide explicit value/label pairs for every select whose value isn't
+  // already human-readable.
+  const plantItems = plants.map((p) => ({
+    value: String(p.id),
+    label: `${p.accession_code} — ${p.name}`,
+  }))
+  const siteItems = sites.map((s) => ({ value: String(s.id), label: s.name }))
+
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,340px)_1fr]">
       <Card className="h-fit">
@@ -118,7 +128,7 @@ export function CrossSimulator({
         <CardContent className="space-y-4">
           <div className="space-y-1.5">
             <Label>Parent A</Label>
-            <Select value={parentA} onValueChange={setParentA}>
+            <Select value={parentA} onValueChange={setParentA} items={plantItems}>
               <SelectTrigger>
                 <SelectValue placeholder="Select accession" />
               </SelectTrigger>
@@ -134,7 +144,7 @@ export function CrossSimulator({
 
           <div className="space-y-1.5">
             <Label>Parent B</Label>
-            <Select value={parentB} onValueChange={setParentB}>
+            <Select value={parentB} onValueChange={setParentB} items={plantItems}>
               <SelectTrigger>
                 <SelectValue placeholder="Select accession" />
               </SelectTrigger>
@@ -153,6 +163,7 @@ export function CrossSimulator({
             <Select
               value={model}
               onValueChange={(v) => setModel(v as CrossModel)}
+              items={MODELS}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -189,7 +200,7 @@ export function CrossSimulator({
               </div>
               <div className="space-y-1.5">
                 <Label>Target Site (optional)</Label>
-                <Select value={siteId} onValueChange={setSiteId}>
+                <Select value={siteId} onValueChange={setSiteId} items={siteItems}>
                   <SelectTrigger>
                     <SelectValue placeholder="No site" />
                   </SelectTrigger>

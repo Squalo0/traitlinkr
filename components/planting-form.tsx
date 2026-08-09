@@ -41,6 +41,15 @@ export function PlantingForm({
   const [quantity, setQuantity] = useState('20')
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10))
 
+  // base-ui's Select.Value resolves its display label from the Root's
+  // `items` map rather than the rendered SelectItem children, so we provide
+  // explicit value/label pairs here.
+  const plantItems = plants.map((p) => ({
+    value: String(p.id),
+    label: `${p.accession_code} — ${p.name}`,
+  }))
+  const siteItems = sites.map((s) => ({ value: String(s.id), label: s.name }))
+
   async function handleSubmit() {
     if (!plantId || !siteId) {
       toast.error('Select a plant and a site')
@@ -87,7 +96,7 @@ export function PlantingForm({
         <div className="grid gap-3">
           <div className="space-y-1.5">
             <Label>Accession</Label>
-            <Select value={plantId} onValueChange={setPlantId}>
+            <Select value={plantId} onValueChange={setPlantId} items={plantItems}>
               <SelectTrigger>
                 <SelectValue placeholder="Select plant" />
               </SelectTrigger>
@@ -102,7 +111,7 @@ export function PlantingForm({
           </div>
           <div className="space-y-1.5">
             <Label>Site</Label>
-            <Select value={siteId} onValueChange={setSiteId}>
+            <Select value={siteId} onValueChange={setSiteId} items={siteItems}>
               <SelectTrigger>
                 <SelectValue placeholder="Select site" />
               </SelectTrigger>

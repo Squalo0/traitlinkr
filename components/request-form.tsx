@@ -20,6 +20,10 @@ import {
 import { TRAIT_LABELS } from '@/lib/types'
 
 const TRAIT_OPTIONS = Object.keys(TRAIT_LABELS)
+// base-ui's Select.Value resolves its display label from the Root's `items`
+// map rather than the rendered SelectItem children, so we provide explicit
+// value/label pairs here.
+const TRAIT_ITEMS = TRAIT_OPTIONS.map((opt) => ({ value: opt, label: TRAIT_LABELS[opt] }))
 
 type TargetRow = { trait: string; target: string; weight: string }
 
@@ -159,6 +163,7 @@ export function RequestForm() {
                     rows.map((r, idx) => (idx === i ? { ...r, trait: v ?? r.trait } : r)),
                   )
                 }
+                items={TRAIT_ITEMS}
               >
                 <SelectTrigger className="flex-1">
                   <SelectValue />
