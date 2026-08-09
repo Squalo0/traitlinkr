@@ -32,8 +32,8 @@ export default async function SitesPage() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
-            Planting Sites
+          <h1 className="font-heading text-2xl font-semibold tracking-tight">
+            Field Sites
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Field locations and active plantings across the breeding network.
@@ -62,8 +62,15 @@ export default async function SitesPage() {
             <Card key={s.id}>
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between gap-2">
-                  <CardTitle className="text-base">{s.name}</CardTitle>
-                  <Badge variant="secondary">{s.region}</Badge>
+                  <CardTitle className="font-heading text-base">
+                    {s.name}
+                  </CardTitle>
+                  <Badge
+                    variant="outline"
+                    className="border-accent/40 bg-accent/25 text-accent-foreground"
+                  >
+                    {s.region}
+                  </Badge>
                 </div>
               </CardHeader>
               <CardContent className="space-y-3 text-sm">

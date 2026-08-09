@@ -12,9 +12,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { cn } from '@/lib/utils'
 import type { BreedingRequest } from '@/lib/types'
 
 const STATUS_OPTIONS: BreedingRequest['status'][] = ['open', 'matched', 'closed']
+
+const STATUS_DOT: Record<BreedingRequest['status'], string> = {
+  open: 'bg-chart-3',
+  matched: 'bg-primary',
+  closed: 'bg-muted-foreground',
+}
 
 export function RequestStatusControl({
   id,
@@ -45,11 +52,13 @@ export function RequestStatusControl({
       {updating ? <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" /> : null}
       <Select value={status} onValueChange={handleChange} disabled={updating}>
         <SelectTrigger size="sm" className="w-32 capitalize">
+          <span className={cn('mr-1 h-1.5 w-1.5 rounded-full', STATUS_DOT[status])} />
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
           {STATUS_OPTIONS.map((opt) => (
             <SelectItem key={opt} value={opt} className="capitalize">
+              <span className={cn('mr-1.5 h-1.5 w-1.5 rounded-full', STATUS_DOT[opt])} />
               {opt}
             </SelectItem>
           ))}

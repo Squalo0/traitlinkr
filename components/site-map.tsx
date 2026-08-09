@@ -47,13 +47,13 @@ export function SiteMap({
       const lat = Number(m.latitude)
       const el = document.createElement('div')
       el.style.cssText =
-        'width:16px;height:16px;border-radius:50%;background:#2f9e6b;border:2px solid #fff;box-shadow:0 0 0 2px rgba(47,158,107,.4)'
+        'width:16px;height:16px;border-radius:50%;background:#3d6b45;border:2px solid #f6f1e6;box-shadow:0 0 0 2px rgba(61,107,69,.35)'
       new mapboxgl.Marker(el)
         .setLngLat([lng, lat])
         .setPopup(
           new mapboxgl.Popup({ offset: 16 }).setHTML(
-            `<strong>${m.name}</strong><br/><span style="color:#666">${m.region}</span>${
-              m.detail ? `<br/>${m.detail}` : ''
+            `<strong style="color:#3a2f22">${m.name}</strong><br/><span style="color:#8a7a5f">${m.region}</span>${
+              m.detail ? `<br/><span style="color:#6b6046">${m.detail}</span>` : ''
             }`,
           ),
         )
@@ -76,9 +76,11 @@ export function SiteMap({
         className="flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-border bg-muted/30 p-6 text-center"
         style={{ height }}
       >
-        <MapPin className="h-8 w-8 text-muted-foreground" />
+        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-accent-foreground">
+          <MapPin className="h-6 w-6" />
+        </span>
         <div className="space-y-1">
-          <p className="text-sm font-medium">Map preview unavailable</p>
+          <p className="font-heading text-sm font-medium">Map preview unavailable</p>
           <p className="max-w-sm text-xs text-muted-foreground">
             Add a <code className="font-mono">NEXT_PUBLIC_MAPBOX_TOKEN</code>{' '}
             environment variable to render the interactive site map. Sites are

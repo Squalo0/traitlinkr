@@ -15,8 +15,8 @@ export interface PredictionResult {
 
 function confidenceColor(v: number) {
   if (v >= 75) return 'text-primary'
-  if (v >= 50) return 'text-chart-2'
-  return 'text-destructive'
+  if (v >= 50) return 'text-chart-4'
+  return 'text-chart-3'
 }
 
 export function PredictionResultView({ result }: { result: PredictionResult }) {
@@ -106,10 +106,12 @@ function TraitBar({ trait }: { trait: PredictedTrait }) {
           </span>
         </span>
       </div>
-      <div className="relative h-8 rounded-md bg-muted">
+      <div className="relative h-8 rounded-md border border-border bg-muted/60">
+        {/* baseline */}
+        <div className="absolute inset-x-2 top-1/2 h-px -translate-y-1/2 bg-border" />
         {/* prediction interval band */}
         <div
-          className="absolute top-1/2 h-4 -translate-y-1/2 rounded bg-primary/20"
+          className="absolute top-1/2 h-4 -translate-y-1/2 rounded-sm border border-chart-1/40 bg-chart-1/15"
           style={{
             left: `${pos(trait.low)}%`,
             width: `${pos(trait.high) - pos(trait.low)}%`,
@@ -121,7 +123,7 @@ function TraitBar({ trait }: { trait: PredictedTrait }) {
         <ParentMarker left={pos(trait.parentB)} label="B" tone="muted" />
         {/* predicted marker */}
         <div
-          className="absolute top-1/2 z-10 h-6 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary"
+          className="absolute top-1/2 z-10 h-6 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-chart-3"
           style={{ left: `${pos(trait.predicted)}%` }}
           title={`Predicted: ${trait.predicted}`}
         />

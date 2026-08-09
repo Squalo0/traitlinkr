@@ -93,7 +93,7 @@ export function SiteForm() {
       />
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Add Planting Site</DialogTitle>
+          <DialogTitle className="font-heading">Add Field Site</DialogTitle>
           <DialogDescription>
             Register a field location for trials and plantings.
           </DialogDescription>

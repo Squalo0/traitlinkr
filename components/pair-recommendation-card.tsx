@@ -5,8 +5,8 @@ import { TRAIT_LABELS, type PairRecommendation } from '@/lib/types'
 
 function scoreColor(v: number) {
   if (v >= 75) return 'bg-primary'
-  if (v >= 50) return 'bg-chart-2'
-  return 'bg-destructive'
+  if (v >= 50) return 'bg-chart-4'
+  return 'bg-chart-3'
 }
 
 export function PairRecommendationCard({
@@ -21,7 +21,7 @@ export function PairRecommendationCard({
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <CardTitle className="text-base">
+            <CardTitle className="font-heading text-base">
               #{rank} {rec.parentA.accession_code} × {rec.parentB.accession_code}
             </CardTitle>
             <p className="mt-0.5 text-xs text-muted-foreground">

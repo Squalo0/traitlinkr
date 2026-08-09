@@ -15,7 +15,7 @@ export default async function SimulatorPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-balance">
+        <h1 className="font-heading text-2xl font-semibold tracking-tight text-balance">
           Cross Simulator
         </h1>
         <p className="mt-1 text-sm text-muted-foreground text-pretty">
@@ -29,8 +29,8 @@ export default async function SimulatorPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <GitMerge className="h-4 w-4" />
+          <CardTitle className="flex items-center gap-2 font-heading text-base">
+            <GitMerge className="h-4 w-4 text-primary" />
             Saved Crosses
           </CardTitle>
         </CardHeader>

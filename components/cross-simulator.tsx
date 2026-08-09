@@ -120,8 +120,8 @@ export function CrossSimulator({
     <div className="grid gap-6 lg:grid-cols-[minmax(0,340px)_1fr]">
       <Card className="h-fit">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <GitMerge className="h-4 w-4" />
+          <CardTitle className="flex items-center gap-2 font-heading text-base">
+            <GitMerge className="h-4 w-4 text-primary" />
             Configure Cross
           </CardTitle>
         </CardHeader>
@@ -233,7 +233,7 @@ export function CrossSimulator({
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">
+          <CardTitle className="font-heading text-base">
             {result
               ? `Predicted Offspring — ${result.parentA.code} × ${result.parentB.code}`
               : 'Prediction Results'}

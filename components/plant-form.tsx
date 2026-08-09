@@ -125,7 +125,9 @@ export function PlantForm() {
       />
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Register Germplasm Accession</DialogTitle>
+          <DialogTitle className="font-heading">
+            Register Germplasm Accession
+          </DialogTitle>
           <DialogDescription>
             Add a plant with its SNP marker genotypes and phenotype trait
             measurements.

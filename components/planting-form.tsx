@@ -88,7 +88,7 @@ export function PlantingForm({
       />
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Record Planting</DialogTitle>
+          <DialogTitle className="font-heading">Record Planting</DialogTitle>
           <DialogDescription>
             Log an accession planted at a field site.
           </DialogDescription>
