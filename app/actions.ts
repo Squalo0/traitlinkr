@@ -4,7 +4,17 @@ import { revalidatePath } from 'next/cache'
 import { sql } from '@/lib/db'
 import { getPlantDetail } from '@/lib/queries'
 import { predictCross } from '@/lib/prediction'
+import { getSession } from '@/lib/auth'
+import { getProfile } from '@/lib/queries'
 import type { CrossModel, Marker, PlantTrait, TargetTrait } from '@/lib/types'
+
+async function requireRole(role: 'breeder' | 'requester') {
+  const session = await getSession()
+  if (!session?.user?.id) throw new Error('Unauthorized')
+  const profile = await getProfile(session.user.id)
+  if (!profile || profile.role !== role) throw new Error('Forbidden')
+  return { session, profile }
+}
 
 export async function createPlant(input: {
   accession_code: string
@@ -16,6 +26,7 @@ export async function createPlant(input: {
   markers: { marker: string; allele: string }[]
   traits: { trait: string; value: number; unit?: string }[]
 }) {
+  await requireRole('breeder')
   const rows = (await sql`
     INSERT INTO plants (accession_code, name, species, generation, vigor, notes)
     VALUES (${input.accession_code}, ${input.name}, ${input.species}, ${input.generation}, ${input.vigor}, ${input.notes ?? null})
@@ -38,6 +49,7 @@ export async function createPlant(input: {
 }
 
 export async function deletePlant(id: number) {
+  await requireRole('breeder')
   await sql`DELETE FROM markers WHERE plant_id = ${id}`
   await sql`DELETE FROM plant_traits WHERE plant_id = ${id}`
   await sql`DELETE FROM plantings WHERE plant_id = ${id}`
@@ -55,6 +67,7 @@ export async function createSite(input: {
   capacity: number
   notes?: string
 }) {
+  await requireRole('breeder')
   await sql`
     INSERT INTO sites (name, region, latitude, longitude, climate, soil, capacity, notes)
     VALUES (${input.name}, ${input.region}, ${input.latitude}, ${input.longitude}, ${input.climate ?? null}, ${input.soil ?? null}, ${input.capacity}, ${input.notes ?? null})
@@ -69,6 +82,7 @@ export async function createPlanting(input: {
   quantity: number
   planted_on: string
 }) {
+  await requireRole('breeder')
   await sql`
     INSERT INTO plantings (plant_id, site_id, quantity, planted_on, status)
     VALUES (${input.plant_id}, ${input.site_id}, ${input.quantity}, ${input.planted_on}, 'growing')
@@ -82,6 +96,7 @@ export async function runCrossPrediction(input: {
   parentBId: number
   model: CrossModel
 }) {
+  await requireRole('breeder')
   const [a, b] = await Promise.all([
     getPlantDetail(input.parentAId),
     getPlantDetail(input.parentBId),
@@ -102,6 +117,7 @@ export async function saveCross(input: {
   model: CrossModel
   siteId?: number
 }) {
+  await requireRole('breeder')
   const [a, b] = await Promise.all([
     getPlantDetail(input.parentAId),
     getPlantDetail(input.parentBId),
@@ -128,12 +144,21 @@ export async function createRequest(input: {
   region?: string
   target_traits: TargetTrait[]
 }) {
+  const { session, profile } = await requireRole('requester')
   const rows = (await sql`
-    INSERT INTO requests (requester_name, org, title, description, region, target_traits, status)
-    VALUES (${input.requester_name}, ${input.org ?? null}, ${input.title}, ${input.description ?? null}, ${input.region ?? null}, ${JSON.stringify(input.target_traits)}, 'open')
+    INSERT INTO requests (requester_name, org, title, description, region, target_traits, status, created_by)
+    VALUES (${input.requester_name || profile.name || session.user.name}, ${input.org ?? null}, ${input.title}, ${input.description ?? null}, ${input.region ?? null}, ${JSON.stringify(input.target_traits)}, 'open', ${session.user.id})
     RETURNING id
   `) as { id: number }[]
   revalidatePath('/requests')
   revalidatePath('/admin')
   return { id: rows[0].id }
+}
+
+export async function setRequestStatus(id: number, status: 'open' | 'matched' | 'closed') {
+  await requireRole('breeder')
+  await sql`UPDATE requests SET status = ${status} WHERE id = ${id}`
+  revalidatePath('/requests')
+  revalidatePath(`/requests/${id}`)
+  revalidatePath('/admin')
 }

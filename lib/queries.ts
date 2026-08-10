@@ -11,10 +11,37 @@ import type {
   Site,
 } from './types'
 
+// The Neon serverless driver returns Postgres `numeric` columns as strings
+// (to avoid precision loss), but the app's types expect real JS numbers.
+// Coerce them right after fetching so every consumer downstream gets the
+// correctly-typed value.
+function toPlant(p: Plant): Plant {
+  return { ...p, vigor: Number(p.vigor) }
+}
+
+function toTrait(t: PlantTrait): PlantTrait {
+  return { ...t, value: Number(t.value) }
+}
+
+function toSite(s: Site): Site {
+  return { ...s, latitude: Number(s.latitude), longitude: Number(s.longitude) }
+}
+
+function toCross<T extends { genomic_similarity: number | null; confidence: number | null }>(
+  c: T,
+): T {
+  return {
+    ...c,
+    genomic_similarity: c.genomic_similarity === null ? null : Number(c.genomic_similarity),
+    confidence: c.confidence === null ? null : Number(c.confidence),
+  }
+}
+
 export async function getPlants(): Promise<Plant[]> {
-  return (await sql`
+  const plants = (await sql`
     SELECT * FROM plants ORDER BY accession_code
   `) as Plant[]
+  return plants.map(toPlant)
 }
 
 export async function getPlantDetails(): Promise<PlantDetail[]> {
@@ -23,10 +50,10 @@ export async function getPlantDetails(): Promise<PlantDetail[]> {
     sql`SELECT * FROM markers` as Promise<Marker[]>,
     sql`SELECT * FROM plant_traits` as Promise<PlantTrait[]>,
   ])
-  return plants.map((p) => ({
+  return plants.map(toPlant).map((p) => ({
     ...p,
     markers: markers.filter((m) => m.plant_id === p.id),
-    traits: traits.filter((t) => t.plant_id === p.id),
+    traits: traits.filter((t) => t.plant_id === p.id).map(toTrait),
   }))
 }
 
@@ -37,11 +64,12 @@ export async function getPlantDetail(id: number): Promise<PlantDetail | null> {
     sql`SELECT * FROM markers WHERE plant_id = ${id}` as Promise<Marker[]>,
     sql`SELECT * FROM plant_traits WHERE plant_id = ${id}` as Promise<PlantTrait[]>,
   ])
-  return { ...rows[0], markers, traits }
+  return { ...toPlant(rows[0]), markers, traits: traits.map(toTrait) }
 }
 
 export async function getSites(): Promise<Site[]> {
-  return (await sql`SELECT * FROM sites ORDER BY name`) as Site[]
+  const sites = (await sql`SELECT * FROM sites ORDER BY name`) as Site[]
+  return sites.map(toSite)
 }
 
 export async function getPlantings(): Promise<
@@ -59,22 +87,33 @@ export async function getPlantings(): Promise<
 export async function getCrosses(): Promise<
   (Cross & { parent_a_name: string; parent_b_name: string })[]
 > {
-  return (await sql`
+  const rows = (await sql`
     SELECT c.*, pa.name AS parent_a_name, pb.name AS parent_b_name
     FROM crosses c
     JOIN plants pa ON pa.id = c.parent_a_id
     JOIN plants pb ON pb.id = c.parent_b_id
     ORDER BY c.created_at DESC
   `) as (Cross & { parent_a_name: string; parent_b_name: string })[]
+  return rows.map(toCross)
 }
 
-export async function getRequests(): Promise<BreedingRequest[]> {
+export async function getProfile(userId: string) {
+  const rows = (await sql`SELECT id, role, name FROM profiles WHERE id = ${userId}`) as { id: string; role: 'breeder' | 'requester'; name: string | null }[]
+  return rows[0] ?? null
+}
+
+export async function getRequests(userId?: string, role?: 'breeder' | 'requester'): Promise<BreedingRequest[]> {
+  if (role === 'requester' && userId) {
+    return (await sql`SELECT * FROM requests WHERE created_by = ${userId} ORDER BY created_at DESC`) as BreedingRequest[]
+  }
   return (await sql`SELECT * FROM requests ORDER BY created_at DESC`) as BreedingRequest[]
 }
 
-export async function getRequest(id: number): Promise<BreedingRequest | null> {
-  const rows = (await sql`SELECT * FROM requests WHERE id = ${id}`) as BreedingRequest[]
-  return rows[0] ?? null
+export async function getRequest(id: number, userId?: string, role?: 'breeder' | 'requester'): Promise<BreedingRequest | null> {
+  const rows = role === 'requester' && userId
+    ? await sql`SELECT * FROM requests WHERE id = ${id} AND created_by = ${userId}`
+    : await sql`SELECT * FROM requests WHERE id = ${id}`
+  return (rows as BreedingRequest[])[0] ?? null
 }
 
 export async function getDashboardStats() {

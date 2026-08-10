@@ -1,19 +1,43 @@
 'use client'
 
-import { Fragment, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ChevronDown, ChevronRight, Trash2, Dna, Activity } from 'lucide-react'
+import { ChevronDown, ChevronRight, Trash2, Dna, Activity, Search } from 'lucide-react'
 import { toast } from 'sonner'
 import { deletePlant } from '@/app/actions'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { cn } from '@/lib/utils'
-import { TRAIT_LABELS, type PlantDetail } from '@/lib/types'
+import { TRAIT_LABELS, type Generation, type PlantDetail } from '@/lib/types'
+
+const GENERATION_OPTIONS: (Generation | 'all')[] = ['all', 'parent', 'f1', 'f2', 'advanced']
 
 export function PlantTable({ plants }: { plants: PlantDetail[] }) {
   const router = useRouter()
   const [expanded, setExpanded] = useState<number | null>(null)
   const [deleting, setDeleting] = useState<number | null>(null)
+  const [query, setQuery] = useState('')
+  const [generation, setGeneration] = useState<Generation | 'all'>('all')
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    return plants.filter((p) => {
+      if (generation !== 'all' && p.generation !== generation) return false
+      if (!q) return true
+      return (
+        p.accession_code.toLowerCase().includes(q) ||
+        p.name.toLowerCase().includes(q)
+      )
+    })
+  }, [plants, query, generation])
 
   async function handleDelete(id: number, code: string) {
     setDeleting(id)
@@ -37,8 +61,44 @@ export function PlantTable({ plants }: { plants: PlantDetail[] }) {
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border border-border">
-      <table className="w-full text-sm">
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="relative flex-1 sm:max-w-xs">
+          <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search accession or name…"
+            className="pl-8"
+          />
+        </div>
+        <Select
+          value={generation}
+          onValueChange={(v) => setGeneration(v as Generation | 'all')}
+        >
+          <SelectTrigger size="sm" className="w-36 capitalize">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {GENERATION_OPTIONS.map((g) => (
+              <SelectItem key={g} value={g} className="capitalize">
+                {g === 'all' ? 'All generations' : g}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <span className="text-xs text-muted-foreground">
+          {filtered.length} of {plants.length}
+        </span>
+      </div>
+
+      {filtered.length === 0 ? (
+        <div className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
+          No accessions match your search.
+        </div>
+      ) : (
+        <div className="overflow-hidden rounded-lg border border-border">
+          <table className="w-full text-sm">
         <thead className="bg-muted/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
           <tr>
             <th className="w-10 px-3 py-2.5" />
@@ -58,7 +118,7 @@ export function PlantTable({ plants }: { plants: PlantDetail[] }) {
           </tr>
         </thead>
         <tbody className="divide-y divide-border">
-          {plants.map((p) => {
+          {filtered.map((p) => {
             const isOpen = expanded === p.id
             return (
               <Fragment key={p.id}>
@@ -78,7 +138,10 @@ export function PlantTable({ plants }: { plants: PlantDetail[] }) {
                   </td>
                   <td className="px-3 py-2.5 font-medium">{p.name}</td>
                   <td className="hidden px-3 py-2.5 sm:table-cell">
-                    <Badge variant="secondary" className="uppercase">
+                    <Badge
+                      variant="outline"
+                      className="border-primary/25 bg-primary/8 text-primary uppercase"
+                    >
                       {p.generation}
                     </Badge>
                   </td>
@@ -113,7 +176,7 @@ export function PlantTable({ plants }: { plants: PlantDetail[] }) {
                       <div className="grid gap-5 md:grid-cols-2">
                         <div>
                           <p className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                            <Dna className="h-3.5 w-3.5" />
+                            <Dna className="h-3.5 w-3.5 text-chart-5" />
                             SNP Genotypes
                           </p>
                           <div className="flex flex-wrap gap-1.5">
@@ -138,7 +201,7 @@ export function PlantTable({ plants }: { plants: PlantDetail[] }) {
                         </div>
                         <div>
                           <p className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                            <Activity className="h-3.5 w-3.5" />
+                            <Activity className="h-3.5 w-3.5 text-chart-3" />
                             Phenotype Traits
                           </p>
                           <div className="grid gap-1.5">
@@ -185,7 +248,9 @@ export function PlantTable({ plants }: { plants: PlantDetail[] }) {
             )
           })}
         </tbody>
-      </table>
+          </table>
+        </div>
+      )}
     </div>
   )
 }

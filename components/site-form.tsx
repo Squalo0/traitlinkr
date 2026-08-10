@@ -83,15 +83,17 @@ export function SiteForm() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>
-          <MapPinPlus className="h-4 w-4" />
-          Add Site
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button>
+            <MapPinPlus className="h-4 w-4" />
+            Add Site
+          </Button>
+        }
+      />
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Add Planting Site</DialogTitle>
+          <DialogTitle className="font-heading">Add Field Site</DialogTitle>
           <DialogDescription>
             Register a field location for trials and plantings.
           </DialogDescription>

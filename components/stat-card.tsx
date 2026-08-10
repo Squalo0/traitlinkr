@@ -13,22 +13,24 @@ export function StatCard({
   icon: LucideIcon
 }) {
   return (
-    <Card>
-      <CardContent className="flex items-center gap-4 p-5">
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground">
-          <Icon className="h-5 w-5" />
-        </span>
-        <div className="min-w-0">
-          <p className="text-2xl font-semibold tabular-nums leading-none">
-            {value}
+    <Card className="relative overflow-hidden">
+      <span
+        aria-hidden
+        className="absolute inset-x-0 bottom-0 h-1 bg-primary/70"
+      />
+      <CardContent className="space-y-2.5 p-5">
+        <div className="flex items-center justify-between gap-2">
+          <p className="truncate text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            {label}
           </p>
-          <p className="mt-1 truncate text-sm text-muted-foreground">{label}</p>
-          {hint ? (
-            <p className="mt-0.5 truncate text-xs text-muted-foreground/80">
-              {hint}
-            </p>
-          ) : null}
+          <Icon className="h-4 w-4 shrink-0 text-accent-foreground/70" />
         </div>
+        <p className="font-heading text-3xl font-semibold tabular-nums leading-none text-foreground">
+          {value}
+        </p>
+        {hint ? (
+          <p className="truncate text-xs text-muted-foreground/80">{hint}</p>
+        ) : null}
       </CardContent>
     </Card>
   )

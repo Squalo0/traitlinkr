@@ -1,6 +1,6 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
-import { Inter, JetBrains_Mono } from 'next/font/google'
+import { Fraunces, Inter, JetBrains_Mono } from 'next/font/google'
 import { Toaster } from '@/components/ui/sonner'
 import './globals.css'
 
@@ -14,6 +14,12 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-jetbrains-mono',
 })
 
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  variable: '--font-fraunces',
+  weight: ['500', '600'],
+})
+
 export const metadata: Metadata = {
   title: 'TraitLinkr — Predictive Plant Breeding Platform',
   description:
@@ -22,11 +28,8 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  colorScheme: 'light dark',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#12211a' },
-  ],
+  colorScheme: 'light',
+  themeColor: '#f6f1e6',
 }
 
 export default function RootLayout({
@@ -37,7 +40,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${jetbrainsMono.variable} bg-background`}
+      className={`light ${inter.variable} ${jetbrainsMono.variable} ${fraunces.variable} bg-background`}
     >
       <body className="font-sans antialiased">
         {children}

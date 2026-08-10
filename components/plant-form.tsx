@@ -28,6 +28,16 @@ import {
 import { TRAIT_LABELS } from '@/lib/types'
 
 const TRAIT_OPTIONS = Object.keys(TRAIT_LABELS)
+// base-ui's Select.Value resolves its display label from the Root's `items`
+// map rather than the rendered SelectItem children, so we provide explicit
+// value/label pairs for every select whose value isn't already the label.
+const TRAIT_ITEMS = TRAIT_OPTIONS.map((opt) => ({ value: opt, label: TRAIT_LABELS[opt] }))
+const GENERATION_ITEMS = [
+  { value: 'parent', label: 'Parent' },
+  { value: 'f1', label: 'F1' },
+  { value: 'f2', label: 'F2' },
+  { value: 'advanced', label: 'Advanced' },
+]
 const DEFAULT_UNITS: Record<string, string> = {
   yield: 't/ha',
   drought_tolerance: 'index',
@@ -105,15 +115,19 @@ export function PlantForm() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>
-          <Plus className="h-4 w-4" />
-          Register Accession
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button>
+            <Plus className="h-4 w-4" />
+            Register Accession
+          </Button>
+        }
+      />
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Register Germplasm Accession</DialogTitle>
+          <DialogTitle className="font-heading">
+            Register Germplasm Accession
+          </DialogTitle>
           <DialogDescription>
             Add a plant with its SNP marker genotypes and phenotype trait
             measurements.
@@ -150,7 +164,11 @@ export function PlantForm() {
             </div>
             <div className="space-y-1.5">
               <Label>Generation</Label>
-              <Select value={generation} onValueChange={setGeneration}>
+              <Select
+                value={generation}
+                onValueChange={setGeneration}
+                items={GENERATION_ITEMS}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -256,6 +274,7 @@ export function PlantForm() {
                       ),
                     )
                   }
+                  items={TRAIT_ITEMS}
                 >
                   <SelectTrigger className="flex-1">
                     <SelectValue />

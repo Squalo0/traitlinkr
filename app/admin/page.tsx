@@ -12,6 +12,7 @@ import { SiteMap, type MapMarker } from '@/components/site-map'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { RequestStatusBadge } from '@/components/request-status-badge'
 import { TRAIT_LABELS } from '@/lib/types'
 
 export const dynamic = "force-dynamic";
@@ -41,22 +42,25 @@ export default async function DashboardPage() {
   })
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-balance">
+          <h1 className="font-heading text-2xl font-semibold tracking-tight text-balance">
             Breeding Program Overview
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-1.5 text-sm text-muted-foreground">
             Germplasm, field sites, and predictive cross activity at a glance.
           </p>
         </div>
-        <Button asChild>
-          <Link href="/admin/crosses">
-            <GitMerge className="h-4 w-4" />
-            New Cross Simulation
-          </Link>
-        </Button>
+        <Button
+          nativeButton={false}
+          render={
+            <Link href="/admin/crosses">
+              <GitMerge className="h-4 w-4" />
+              New Cross Simulation
+            </Link>
+          }
+        />
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
@@ -70,7 +74,7 @@ export default async function DashboardPage() {
       <div className="grid gap-6 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Field Site Map</CardTitle>
+            <CardTitle className="font-heading text-lg">Field Site Map</CardTitle>
           </CardHeader>
           <CardContent>
             <SiteMap markers={markers} height={420} />
@@ -79,10 +83,13 @@ export default async function DashboardPage() {
 
         <Card>
           <CardHeader className="flex-row items-center justify-between">
-            <CardTitle>Recent Requests</CardTitle>
-            <Button asChild variant="ghost" size="sm">
-              <Link href="/requests">View all</Link>
-            </Button>
+            <CardTitle className="font-heading text-lg">Recent Requests</CardTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              nativeButton={false}
+              render={<Link href="/requests">View all</Link>}
+            />
           </CardHeader>
           <CardContent className="space-y-3">
             {requests.length === 0 ? (
@@ -97,12 +104,7 @@ export default async function DashboardPage() {
                     <p className="text-sm font-medium leading-tight text-pretty">
                       {r.title}
                     </p>
-                    <Badge
-                      variant={r.status === 'open' ? 'default' : 'secondary'}
-                      className="shrink-0 capitalize"
-                    >
-                      {r.status}
-                    </Badge>
+                    <RequestStatusBadge status={r.status} />
                   </div>
                   <p className="mt-1 text-xs text-muted-foreground">
                     {r.requester_name}
@@ -127,7 +129,9 @@ export default async function DashboardPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Recent Cross Simulations</CardTitle>
+          <CardTitle className="font-heading text-lg">
+            Recent Cross Simulations
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {crosses.length === 0 ? (
