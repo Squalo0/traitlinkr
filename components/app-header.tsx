@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { Sprout } from 'lucide-react'
-import { RoleSwitcher } from './role-switcher'
 
 export function AppHeader() {
   return (
@@ -19,7 +18,7 @@ export function AppHeader() {
             </span>
           </div>
         </Link>
-        <RoleSwitcher />
+        <div className="h-9 w-9" aria-hidden="true" />
       </div>
     </header>
   )
