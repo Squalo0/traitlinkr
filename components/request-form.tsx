@@ -30,7 +30,6 @@ type TargetRow = { trait: string; target: string; weight: string }
 export function RequestForm() {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
-  const [requesterName, setRequesterName] = useState('')
   const [org, setOrg] = useState('')
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
@@ -40,7 +39,6 @@ export function RequestForm() {
   ])
 
   function reset() {
-    setRequesterName('')
     setOrg('')
     setTitle('')
     setDescription('')
@@ -49,8 +47,8 @@ export function RequestForm() {
   }
 
   async function handleSubmit() {
-    if (!requesterName.trim() || !title.trim()) {
-      toast.error('Your name and a request title are required')
+    if (!title.trim()) {
+      toast.error('A request title is required')
       return
     }
     const cleanTargets = targets
@@ -67,7 +65,7 @@ export function RequestForm() {
     setSaving(true)
     try {
       await createRequest({
-        requester_name: requesterName.trim(),
+        requester_name: '',
         org: org.trim() || undefined,
         title: title.trim(),
         description: description.trim() || undefined,
@@ -97,15 +95,7 @@ export function RequestForm() {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1.5">
-            <Label htmlFor="r-name">Your Name</Label>
-            <Input
-              id="r-name"
-              value={requesterName}
-              onChange={(e) => setRequesterName(e.target.value)}
-            />
-          </div>
-          <div className="space-y-1.5">
+          <div className="col-span-2 space-y-1.5">
             <Label htmlFor="r-org">Organization</Label>
             <Input id="r-org" value={org} onChange={(e) => setOrg(e.target.value)} />
           </div>

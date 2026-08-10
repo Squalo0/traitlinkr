@@ -97,13 +97,23 @@ export async function getCrosses(): Promise<
   return rows.map(toCross)
 }
 
-export async function getRequests(): Promise<BreedingRequest[]> {
+export async function getProfile(userId: string) {
+  const rows = (await sql`SELECT id, role, name FROM profiles WHERE id = ${userId}`) as { id: string; role: 'breeder' | 'requester'; name: string | null }[]
+  return rows[0] ?? null
+}
+
+export async function getRequests(userId?: string, role?: 'breeder' | 'requester'): Promise<BreedingRequest[]> {
+  if (role === 'requester' && userId) {
+    return (await sql`SELECT * FROM requests WHERE created_by = ${userId} ORDER BY created_at DESC`) as BreedingRequest[]
+  }
   return (await sql`SELECT * FROM requests ORDER BY created_at DESC`) as BreedingRequest[]
 }
 
-export async function getRequest(id: number): Promise<BreedingRequest | null> {
-  const rows = (await sql`SELECT * FROM requests WHERE id = ${id}`) as BreedingRequest[]
-  return rows[0] ?? null
+export async function getRequest(id: number, userId?: string, role?: 'breeder' | 'requester'): Promise<BreedingRequest | null> {
+  const rows = role === 'requester' && userId
+    ? await sql`SELECT * FROM requests WHERE id = ${id} AND created_by = ${userId}`
+    : await sql`SELECT * FROM requests WHERE id = ${id}`
+  return (rows as BreedingRequest[])[0] ?? null
 }
 
 export async function getDashboardStats() {

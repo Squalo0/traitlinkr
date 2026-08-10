@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
-import { getRequest } from '@/lib/queries'
+import { getProfile, getRequest } from '@/lib/queries'
+import { getSession } from '@/lib/auth'
 import { recommendPairs } from '@/lib/matcher'
 import { PairRecommendationCard } from '@/components/pair-recommendation-card'
 import { RequestStatusControl } from '@/components/request-status-control'
@@ -19,7 +20,9 @@ export default async function RequestDetailPage({
   const requestId = Number(id)
   if (Number.isNaN(requestId)) notFound()
 
-  const request = await getRequest(requestId)
+  const session = await getSession()
+  const profile = session?.user?.id ? await getProfile(session.user.id) : null
+  const request = await getRequest(requestId, session?.user?.id, profile?.role)
   if (!request) notFound()
 
   const recommendations = await recommendPairs(request.target_traits)
@@ -47,7 +50,7 @@ export default async function RequestDetailPage({
                 {request.region ? ` · ${request.region}` : ''}
               </p>
             </div>
-            <RequestStatusControl id={request.id} status={request.status} />
+            {profile?.role === 'breeder' && <RequestStatusControl id={request.id} status={request.status} />}
           </div>
           {request.description ? (
             <p className="text-sm text-pretty text-muted-foreground">

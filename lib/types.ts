@@ -92,6 +92,7 @@ export interface BreedingRequest {
   target_traits: TargetTrait[]
   region: string | null
   status: 'open' | 'matched' | 'closed'
+  created_by: string | null
   created_at: string
 }
 

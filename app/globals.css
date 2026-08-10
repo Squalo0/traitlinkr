@@ -126,6 +126,31 @@
   --sidebar-ring: oklch(0.62 0.1 148);
 }
 
+.traitlinkr-map-marker {
+  background: transparent;
+  border: 0;
+}
+
+.traitlinkr-map-marker span {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: oklch(0.4 0.09 152);
+  border: 2px solid oklch(0.995 0.006 80);
+  box-shadow: 0 0 0 3px oklch(0.4 0.09 152 / 0.25);
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: oklch(0.995 0.006 80);
+  color: oklch(0.27 0.03 50);
+}
+
+.leaflet-control-zoom a {
+  color: oklch(0.27 0.03 50);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

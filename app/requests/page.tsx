@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { ArrowRight, Inbox } from 'lucide-react'
-import { getRequests } from '@/lib/queries'
+import { getProfile, getRequests } from '@/lib/queries'
+import { getSession } from '@/lib/auth'
 import { RequestForm } from '@/components/request-form'
 import { Card, CardContent } from '@/components/ui/card'
 import { RequestStatusBadge } from '@/components/request-status-badge'
@@ -9,7 +10,9 @@ import { TRAIT_LABELS } from '@/lib/types'
 export const dynamic = 'force-dynamic'
 
 export default async function RequestsPage() {
-  const requests = await getRequests()
+  const session = await getSession()
+  const profile = session?.user?.id ? await getProfile(session.user.id) : null
+  const requests = await getRequests(session?.user?.id, profile?.role)
 
   return (
     <div className="space-y-6">
@@ -23,7 +26,10 @@ export default async function RequestsPage() {
         </p>
       </div>
 
-      <RequestForm />
+      {profile?.role === 'requester' && <RequestForm />}
+      {profile?.role === 'breeder' && (
+        <p className="text-sm text-muted-foreground">You&apos;re viewing the request queue as a breeder. Open a request to review parent-pair recommendations.</p>
+      )}
 
       <div className="space-y-3">
         <h2 className="text-sm font-medium text-muted-foreground">
