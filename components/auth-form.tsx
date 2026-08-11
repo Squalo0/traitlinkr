@@ -24,10 +24,9 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
     setPending(true)
 
     try {
-      const callbackURL = `${window.location.origin}/auth/complete`
       const result = mode === 'sign-in'
-        ? await authClient.signIn.email({ email, password, callbackURL })
-        : await authClient.signUp.email({ name, email, password, callbackURL })
+        ? await authClient.signIn.email({ email, password })
+        : await authClient.signUp.email({ name, email, password })
 
       if (result.error) {
         setError(result.error.message || 'Unable to authenticate. Check your details and try again.')
