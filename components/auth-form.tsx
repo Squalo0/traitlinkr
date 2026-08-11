@@ -37,6 +37,7 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
       if (mode === 'sign-up') {
         const profileResponse = await fetch('/api/profile', {
           method: 'POST',
+          credentials: 'include',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({ role, name }),
         })
