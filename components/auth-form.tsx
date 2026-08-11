@@ -22,25 +22,37 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
     event.preventDefault()
     setError('')
     setPending(true)
-    const result = mode === 'sign-in'
-      ? await authClient.signIn.email({ email, password, callbackURL: '/auth/complete' })
-      : await authClient.signUp.email({ name, email, password, callbackURL: '/auth/complete' })
 
-    if (result.error) {
-      setError(result.error.message || 'Unable to authenticate. Check your details and try again.')
+    try {
+      const callbackURL = `${window.location.origin}/auth/complete`
+      const result = mode === 'sign-in'
+        ? await authClient.signIn.email({ email, password, callbackURL })
+        : await authClient.signUp.email({ name, email, password, callbackURL })
+
+      if (result.error) {
+        setError(result.error.message || 'Unable to authenticate. Check your details and try again.')
+        return
+      }
+
+      if (mode === 'sign-up') {
+        const profileResponse = await fetch('/api/profile', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ role, name }),
+        })
+        if (!profileResponse.ok) {
+          setError('Your account was created, but your profile could not be saved. Please try again.')
+          return
+        }
+      }
+
+      router.push('/auth/complete')
+      router.refresh()
+    } catch {
+      setError('Unable to reach the authentication service. Please try again.')
+    } finally {
       setPending(false)
-      return
     }
-
-    if (mode === 'sign-up') {
-      await fetch('/api/profile', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ role, name }),
-      })
-    }
-    router.push('/auth/complete')
-    router.refresh()
   }
 
   return (
