@@ -11,6 +11,6 @@ export const auth = createNeonAuth({
 })
 
 export async function getSession() {
-  const result = await auth.getSession()
+  const result = await auth.getSession({ query: { disableCookieCache: 'true' } })
   return result.data ?? null
 }
