@@ -18,7 +18,7 @@ export default async function HomePage() {
           </div>
         </div>
       </header>
-      <section className="mx-auto grid max-w-7xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:py-28">
+      <section className="mx-auto grid max-w-7xl gap-12 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16 lg:py-24">
         <div className="space-y-7">
           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">A field notebook for better breeding decisions</p>
           <h1 className="max-w-3xl font-heading text-5xl leading-[1.02] tracking-tight text-balance sm:text-7xl">Connect traits to the next generation.</h1>
@@ -28,9 +28,9 @@ export default async function HomePage() {
             <Link href={session ? '/requests' : '/auth/sign-in'} className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-5 py-3 font-medium hover:bg-secondary">Submit a breeding request</Link>
           </div>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="rounded-xl border border-border bg-card p-6 shadow-sm sm:translate-y-8"><Wheat className="mb-12 h-6 w-6 text-primary" /><p className="font-heading text-2xl">Trace the traits</p><p className="mt-2 text-sm leading-6 text-muted-foreground">Keep phenotype goals and parent material connected.</p></div>
-          <div className="rounded-xl border border-border bg-secondary p-6 sm:-translate-y-8"><MapPinned className="mb-12 h-6 w-6 text-accent" /><p className="font-heading text-2xl">Know the field</p><p className="mt-2 text-sm leading-6 text-muted-foreground">Make site conditions part of every breeding decision.</p></div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+          <div className="flex min-h-52 flex-col justify-between rounded-xl border border-border bg-card p-6 shadow-sm"><Wheat className="h-6 w-6 text-primary" /><div><p className="font-heading text-2xl">Trace the traits</p><p className="mt-2 max-w-sm text-sm leading-6 text-muted-foreground">Keep phenotype goals and parent material connected.</p></div></div>
+          <div className="flex min-h-52 flex-col justify-between rounded-xl border border-border bg-secondary p-6"><MapPinned className="h-6 w-6 text-accent" /><div><p className="font-heading text-2xl">Know the field</p><p className="mt-2 max-w-sm text-sm leading-6 text-muted-foreground">Make site conditions part of every breeding decision.</p></div></div>
         </div>
       </section>
     </main>
