@@ -46,8 +46,7 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
         }
       }
 
-      router.push('/auth/complete')
-      router.refresh()
+      window.location.assign('/admin')
     } catch (error) {
       const message = error instanceof Error ? error.message : ''
       setError(message || 'Unable to reach the authentication service. Please try again.')
